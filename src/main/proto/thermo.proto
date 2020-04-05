@@ -1,8 +1,6 @@
 syntax = "proto3";
-
 package thermo;
-
-option java_package = "com.proto.thermo";
+option java_package = "com.conorjc.proto";
 option java_multiple_files = true;
 
 message Thermo {

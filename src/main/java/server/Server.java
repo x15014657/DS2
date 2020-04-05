@@ -1,5 +1,6 @@
 package server;
 
+import impl.LightServiceImpl;
 import impl.PrinterServiceImpl;
 import impl.ThermoServiceImpl;
 import impl.VpnServiceImpl;
@@ -46,6 +47,16 @@ public class Server {
                         .build();
         try {
             server2.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        io.grpc.Server server3 =
+                ServerBuilder.forPort(5003)
+                        .addService(new LightServiceImpl())
+                        .build();
+        try {
+            server3.start();
         } catch (Exception e) {
             e.printStackTrace();
         }

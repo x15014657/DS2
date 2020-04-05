@@ -1,9 +1,6 @@
 package client;
 
-import com.conorjc.proto.PrintServiceGrpc;
-import com.conorjc.proto.Printer;
-import com.conorjc.proto.PrinterStatusRequest;
-import com.conorjc.proto.PrinterStatusResponse;
+import com.conorjc.proto.*;
 import com.proto.thermo.Thermo;
 import com.proto.thermo.ThermoRequest;
 import com.proto.thermo.ThermoResponse;
@@ -83,5 +80,21 @@ public class ClientUnary {
 
         ThermoResponse thermoResponse = thermoClient.thermoStatus(thermoRequest);
         System.out.println(thermoResponse.getResult());
+
+        channel2.shutdown();
+
+        /*------------Lights Status------------*/
+
+        LightsServiceGrpc.LightsServiceBlockingStub lightClient = LightsServiceGrpc.newBlockingStub(channel3);
+        Lights lightStatus = Lights.newBuilder()
+                .setStatus(false)
+                .build();
+
+            LightStatusRequest lightStatusRequest = LightStatusRequest.newBuilder()
+                    .setStatus(lightStatus)
+                    .build();
+
+        LightStatusResponse lightStatusResponse = lightClient.lightService(lightStatusRequest);
+        System.out.println(lightStatusResponse.getResult());
       }
-    }
+}
