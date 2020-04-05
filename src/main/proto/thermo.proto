@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+package thermo;
+
+option java_package = "com.proto.thermo";
+option java_multiple_files = true;
+
+message Thermo {
+  bool status = 1;
+  string warm = 2;
+  string cold = 3;
+  string sensor = 4;
+}
+
+message ThermoRequest {
+  Thermo status = 1;
+}
+message ThermoResponse {
+  string result = 1;
+}
+
+message HeatUpRequest{
+  Thermo stat = 1;
+}
+message HeatUpResponse{
+  string level1 = 1;
+  string level2 = 2;
+  string level3 = 3;
+  string result = 4;
+}
+
+message CoolAirRequest{
+  Thermo stc = 1;
+}
+message CoolAirResponse{
+  string level1 =1;
+  string level2 =2;
+  string level3 = 3;
+  string result =4;
+}
+
+message ThermoMonitorRequest{
+  Thermo mon = 1;
+}
+message ThermoMonitorResponse{
+  string result = 1;
+}
+
+
+//define and name service - make readable
+service ThermoService{
+  //Unary
+  rpc ThermoStatus(ThermoRequest) returns (ThermoResponse) {};
+  //Server Streaming
+  rpc HeatUpService(HeatUpRequest) returns (stream HeatUpResponse) {};
+  //Client Streaming
+  rpc CoolAirService(stream CoolAirRequest) returns (CoolAirResponse) {};
+  //BiDi Streaming
+  rpc ThermoMonitorService(stream ThermoMonitorRequest) returns (stream ThermoMonitorResponse) {};
+}
