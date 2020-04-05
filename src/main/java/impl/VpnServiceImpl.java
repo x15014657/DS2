@@ -1,16 +1,17 @@
 package impl;
 
-import com.proto.vpn.Vpn;
-import com.proto.vpn.VpnServiceGrpc;
-import com.proto.vpn.VpnStatusRequest;
-import com.proto.vpn.VpnStatusResponse;
+
+import com.conorjc.proto.Vpn;
+import com.conorjc.proto.VpnServiceGrpc;
+import com.conorjc.proto.VpnStatusRequest;
+import com.conorjc.proto.VpnStatusResponse;
 import io.grpc.stub.StreamObserver;
 
 public class VpnServiceImpl extends VpnServiceGrpc.VpnServiceImplBase {
 
     @Override
     public void vpnStatus(VpnStatusRequest request, StreamObserver<VpnStatusResponse> responseObserver) {
-        Vpn vpnStatus = request.getVpn();
+        Vpn vpnStatus = request.getStatus();
         boolean status = vpnStatus.getStatus();
 
         //create the  response

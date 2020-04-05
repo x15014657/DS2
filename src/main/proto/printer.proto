@@ -28,17 +28,17 @@ message CheckPrinterResponse {
     string result = 4;
 }
 /* --------------------------------------------------------- */
-message LongPrintTestRequest{
-    Printer tp = 1;
+message PrintTestRequest{
+    Printer status = 1;
 }
-message LongPrintTestResponse{
+message PrintTestResponse{
     string result = 1;
 }
 /* --------------------------------------------------------- */
-message DocumentPrintRequest{
+message DocumentRequest{
     Printer dts = 1;
 }
-message DocumentPrintResponse{
+message DocumentResponse{
     string result = 1;
 }
 /* --------------------------------------------------------- */
@@ -49,7 +49,7 @@ service PrintService{
     //Server Streaming
     rpc CheckPrinter(CheckPrinterRequest)returns (stream CheckPrinterResponse) {};
     //Client Streaming
-    rpc LongPrintTest(stream LongPrintTestRequest) returns (LongPrintTestResponse) {};
+    rpc PrintTest(stream PrintTestRequest) returns (PrintTestResponse) {};
     //Bi-Di Stream
-    rpc DocumentPrint(stream DocumentPrintRequest) returns (stream DocumentPrintResponse) {};
+    rpc Document(stream DocumentRequest) returns (stream DocumentResponse) {};
 }

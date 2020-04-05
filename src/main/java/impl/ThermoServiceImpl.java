@@ -1,16 +1,16 @@
 package impl;
 
-import com.proto.thermo.Thermo;
-import com.proto.thermo.ThermoRequest;
-import com.proto.thermo.ThermoResponse;
-import com.proto.thermo.ThermoServiceGrpc;
+import com.conorjc.proto.Thermo;
+import com.conorjc.proto.ThermoRequest;
+import com.conorjc.proto.ThermoResponse;
+import com.conorjc.proto.ThermoServiceGrpc;
 import io.grpc.stub.StreamObserver;
+
 
 public class ThermoServiceImpl extends ThermoServiceGrpc.ThermoServiceImplBase{
 
-    @Override //Unary
-    public void thermoStatus(ThermoRequest request, StreamObserver<ThermoResponse> responseObserver) {
 
+    public void thermoStatus(ThermoRequest request, StreamObserver<ThermoResponse> responseObserver) {
         Thermo theroStat = request.getStatus();
         boolean status = theroStat.getStatus();
 
@@ -31,6 +31,5 @@ public class ThermoServiceImpl extends ThermoServiceGrpc.ThermoServiceImplBase{
 
         //complete the RPC call
         responseObserver.onCompleted();
-
     }
 }

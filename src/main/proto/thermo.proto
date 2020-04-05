@@ -50,7 +50,7 @@ service ThermoService{
   //Unary
   rpc ThermoStatus(ThermoRequest) returns (ThermoResponse) {};
   //Server Streaming
-  rpc HeatUpService(HeatUpRequest) returns (stream HeatUpResponse) {};
+  rpc WarmAirService(HeatUpRequest) returns (stream HeatUpResponse) {};
   //Client Streaming
   rpc CoolAirService(stream CoolAirRequest) returns (CoolAirResponse) {};
   //BiDi Streaming

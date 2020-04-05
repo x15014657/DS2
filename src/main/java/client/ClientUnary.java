@@ -1,22 +1,35 @@
 package client;
 
 import com.conorjc.proto.*;
-import com.proto.thermo.Thermo;
-import com.proto.thermo.ThermoRequest;
-import com.proto.thermo.ThermoResponse;
-import com.proto.thermo.ThermoServiceGrpc;
-import com.proto.vpn.Vpn;
-import com.proto.vpn.VpnServiceGrpc;
-import com.proto.vpn.VpnStatusRequest;
-import com.proto.vpn.VpnStatusResponse;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import jmdns.GetRequest;
+import javax.jmdns.JmDNS;
+import javax.jmdns.ServiceEvent;
+import javax.jmdns.ServiceInfo;
+import javax.jmdns.ServiceListener;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 public class ClientUnary {
 
     public static  void main(String[] args) {
 
-        System.out.println("Client Interface Initialising...");
+        try {
+            // Create a JmDNS instance
+            JmDNS jmdns = JmDNS.create(InetAddress.getLocalHost());
+
+            // Add a service listener
+            jmdns.addServiceListener("_printerServiceImpl._tcp.local.", new SampleListener());
+
+        } catch (UnknownHostException e) {
+            System.out.println(e.getMessage());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("Unary Client Interface Initialising...");
         System.out.println("Building Channels...");
 
         ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 5000)
@@ -59,7 +72,7 @@ public class ClientUnary {
                 .build();
 
         VpnStatusRequest vpnStatusRequest = VpnStatusRequest.newBuilder()
-                .setVpn(vpnStatus)
+                .setStatus(vpnStatus)
                 .build();
 
         VpnStatusResponse vpnStatusResponse = vpnClient.vpnStatus(vpnStatusRequest);
@@ -70,18 +83,16 @@ public class ClientUnary {
         /*------------ThermoStat Status------------*/
 
         ThermoServiceGrpc.ThermoServiceBlockingStub thermoClient = ThermoServiceGrpc.newBlockingStub(channel2);
-        Thermo thermoStatus = Thermo.newBuilder()
-                .setStatus(false)
-                .build();
+
+        Thermo thermoStatus = Thermo.newBuilder().setStatus(true).build();
 
         ThermoRequest thermoRequest = ThermoRequest.newBuilder()
-                .setStatus(thermoStatus)
-                .build();
+                .setStatus(thermoStatus).build();
 
         ThermoResponse thermoResponse = thermoClient.thermoStatus(thermoRequest);
         System.out.println(thermoResponse.getResult());
 
-        channel2.shutdown();
+        channel1.shutdown();
 
         /*------------Lights Status------------*/
 
@@ -97,4 +108,25 @@ public class ClientUnary {
         LightStatusResponse lightStatusResponse = lightClient.lightService(lightStatusRequest);
         System.out.println(lightStatusResponse.getResult());
       }
+
+    static class SampleListener implements ServiceListener {
+
+        @Override
+        public void serviceAdded(ServiceEvent event) {
+            System.out.println("Service added: " + event.getInfo());
+        }
+
+        @Override
+        public void serviceRemoved(ServiceEvent event) {
+            System.out.println("Service removed: " + event.getInfo());
+        }
+
+        @Override
+        public void serviceResolved(ServiceEvent event) {
+            ServiceInfo info = event.getInfo();
+            int port = info.getPort();
+            String path = info.getNiceTextString().split("=")[1];
+            GetRequest.request("localhost:" + port + "/" + path);
+        }
+    }
 }
